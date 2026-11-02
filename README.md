@@ -2,28 +2,59 @@
 
 **Vive experiencias que merecen ser recordadas.**
 
-Pluxis es una aplicación web Full Stack para descubrir, explorar y reservar eventos. Permite consultar actividades, buscar eventos cercanos, gestionar reservas y acceder a funcionalidades personalizadas mediante autenticación de usuarios.
+Pluxis es una aplicación web Full Stack para descubrir eventos, consultar actividades cercanas y gestionar reservas. La plataforma contempla dos perfiles principales: **cliente**, que explora y reserva eventos, y **organizador**, que publica y administra sus propios eventos.
 
-El proyecto está desarrollado con React y Vite en el frontend, Python y Flask en el backend y PostgreSQL como base de datos.
+Proyecto académico desarrollado con React, Flask y PostgreSQL.
 
-## Características principales
+## Demo online
 
-- Registro e inicio de sesión de usuarios.
-- Autenticación mediante JSON Web Tokens (JWT).
-- Protección de rutas privadas.
-- Gestión y publicación de eventos.
-- Organización de eventos por categorías.
-- Consulta de información detallada de eventos.
-- Búsqueda de eventos cercanos mediante geolocalización.
-- Introducción manual de ubicaciones.
-- Gestión de reservas.
-- Subida y almacenamiento de imágenes mediante Cloudinary.
-- Recuperación de contraseñas mediante correo electrónico.
-- Interfaz responsive.
-### Importante. Cuentas de  organizador  y usuario:
-Organizador:  email: laura@eventify.com   password: 123456
-Usuario: email: carlos@eventify.com password: 123456
-Se pueden crear perfiles de usuarios desde el registro, pero no perfiles de organizadores ya que por seguridad lo gestionariamos nosotros
+- **Aplicación:** https://pluxis.onrender.com
+- **API:** https://pluxis-api.onrender.com
+
+### Cuentas de demostración
+
+Estas credenciales están incluidas para facilitar la evaluación de los dos roles de la aplicación:
+
+| Perfil | Correo electrónico | Contraseña |
+|---|---|---|
+| Organizador | `laura@eventify.com` | `123456` |
+| Cliente | `carlos@eventify.com` | `123456` |
+
+**Nota para la evaluación:** el registro público crea cuentas de cliente. Los permisos de organizador se asignan de forma controlada y no se seleccionan desde el formulario de registro. Las cuentas anteriores son las credenciales de demostración documentadas para probar ambos perfiles.
+
+## Funcionalidades
+
+### 1. Funcionalidades para clientes
+
+- **Registro:** creación de una cuenta mediante nombre, correo electrónico y contraseña.
+- **Inicio de sesión:** acceso mediante credenciales y autenticación basada en JWT.
+- **Explorar eventos:** consulta del catálogo de eventos disponibles.
+- **Consultar detalles:** visualización de la descripción, fecha, hora, ubicación, precio, aforo, categoría e imagen de cada evento.
+- **Buscar eventos cercanos:** localización de eventos a partir de la ubicación del usuario o de una ubicación introducida manualmente. La búsqueda utiliza coordenadas y permite establecer un radio en kilómetros.
+- **Reservar entradas:** selección de la cantidad de entradas para un evento, con validación de disponibilidad y aforo.
+- **Mis reservas:** consulta del historial de reservas de la cuenta, con información del evento y del estado de cada reserva.
+- **Cancelar reservas:** posibilidad de cancelar una reserva propia.
+- **Recuperar contraseña:** solicitud de recuperación y restablecimiento mediante un token temporal.
+- **Cerrar sesión:** finalización de la sesión y nueva autenticación cuando el token JWT expira.
+
+### 2. Funcionalidades para organizadores
+
+- **Acceso con rol de organizador:** las opciones de gestión están protegidas por permisos.
+- **Crear eventos:** publicación de eventos indicando título, descripción, fecha, hora, ubicación, precio, capacidad, categoría e imagen.
+- **Editar eventos propios:** actualización de los datos de los eventos creados por el organizador.
+- **Eliminar eventos propios:** eliminación sujeta a las reglas de integridad; un evento con reservas asociadas no se puede eliminar.
+- **Gestionar aforo:** control de la capacidad y de las plazas reservadas para evitar superar el límite disponible.
+- **Consultar reservas asociadas:** acceso a la información necesaria para gestionar las reservas de los eventos propios.
+
+### 3. Funcionalidades generales
+
+- Interfaz adaptable a distintos tamaños de pantalla.
+- Navegación entre páginas mediante React Router.
+- Página de política de privacidad.
+- Carga y almacenamiento de imágenes mediante Cloudinary.
+- Geocodificación y búsqueda por proximidad mediante Geoapify.
+- Envío de correos para recuperación de contraseña mediante SMTP, cuando el servicio de correo está configurado.
+- API REST para comunicar el frontend con el backend.
 
 ## Tecnologías utilizadas
 
@@ -33,8 +64,7 @@ Se pueden crear perfiles de usuarios desde el registro, pero no perfiles de orga
 - JavaScript ES6+
 - Vite 4
 - React Router DOM 6
-- HTML5
-- CSS3
+- HTML5 y CSS3
 - Bootstrap 5
 - Font Awesome 6
 - Fetch API
@@ -44,57 +74,69 @@ Se pueden crear perfiles de usuarios desde el registro, pero no perfiles de orga
 
 - Python 3.13
 - Flask
-- Flask-SQLAlchemy
-- SQLAlchemy
+- Flask-SQLAlchemy y SQLAlchemy
 - Flask-Migrate
 - Flask-JWT-Extended
 - Flask-CORS
-- Flask-Swagger
 - Flask-Admin
+- Flask-Swagger
 - bcrypt
 - Gunicorn
 
-### Base de datos
+### Base de datos y servicios externos
 
-- PostgreSQL
-- Psycopg2
-
-### Servicios externos
-
-| Servicio | Funcionalidad |
+| Tecnología / servicio | Uso |
+|---|---|
+| PostgreSQL | Persistencia de usuarios, categorías, eventos y reservas |
 | Cloudinary | Almacenamiento de imágenes |
-| Geoapify | Geolocalización y búsqueda de ubicaciones |
-| Gmail SMTP | Envío de correos de recuperación de contraseña |
+| Geoapify | Geocodificación y búsqueda de ubicaciones |
+| SMTP (Gmail) | Envío de mensajes de recuperación de contraseña |
+| Render | Despliegue de frontend, API y base de datos |
 
-### Herramientas
+## Arquitectura y modelo de datos
 
-- Git
-- GitHub
-- GitHub Codespaces
-- Postman
-- Pipenv
-- npm
+Pluxis utiliza una arquitectura cliente-servidor:
 
-## Arquitectura
+- **Frontend:** aplicación React que consume la API.
+- **Backend:** API REST construida con Flask.
+- **Base de datos:** PostgreSQL, gestionada mediante SQLAlchemy y migraciones de Flask-Migrate.
+- **Autenticación:** tokens JWT; las contraseñas se protegen mediante hash con bcrypt.
+- **Servicios externos:** Cloudinary, Geoapify y servidor SMTP.
 
-Pluxis utiliza una arquitectura cliente-servidor.
+Las entidades principales son:
 
-- **Frontend:** interfaz desarrollada con React y Vite.
-- **Backend:** API REST desarrollada con Flask.
-- **Base de datos:** PostgreSQL gestionada mediante SQLAlchemy.
-- **Autenticación:** JWT y contraseñas protegidas mediante bcrypt.
-- **Servicios externos:** Cloudinary, Geoapify y SMTP.
+- **User:** nombre, correo electrónico, contraseña protegida, rol y estado de la cuenta.
+- **Category:** categorías para clasificar eventos.
+- **Event:** información del evento, ubicación, coordenadas, precio, capacidad, imagen, organizador y categoría.
+- **Booking:** usuario, evento, cantidad de entradas, fecha de reserva y estado.
+
+## Seguridad y control de acceso
+
+- Los endpoints privados requieren un token JWT válido.
+- Las contraseñas se almacenan mediante hash bcrypt, no en texto plano.
+- El backend comprueba el rol del usuario para las operaciones de organizador.
+- Un organizador solo puede modificar o eliminar sus propios eventos.
+- Un cliente solo puede consultar o cancelar sus propias reservas.
+- Se valida la disponibilidad antes de confirmar una reserva.
+- La configuración sensible se gestiona mediante variables de entorno.
+- CORS limita los orígenes autorizados para la API.
 
 ## Estructura del proyecto
 
 ```text
 Pluxis/
-│
-├── migrations/
-│   └── versions/
-│
-├── public/
-│
+├── frontend/
+│   ├── src/
+│   │   └── front/
+│   │       ├── components/
+│   │       ├── hooks/
+│   │       ├── pages/
+│   │       ├── utils/
+│   │       ├── main.jsx
+│   │       ├── routes.jsx
+│   │       └── store.js
+│   ├── package.json
+│   └── vite.config.js
 ├── src/
 │   ├── api/
 │   │   ├── admin.py
@@ -102,23 +144,13 @@ Pluxis/
 │   │   ├── models.py
 │   │   ├── routes.py
 │   │   └── utils.py
-│   │
 │   ├── front/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── pages/
-│   │   ├── utils/
-│   │   ├── index.css
-│   │   ├── main.jsx
-│   │   ├── routes.jsx
-│   │   └── store.js
-│   │
 │   ├── app.py
 │   └── wsgi.py
-│
+├── migrations/
+├── scripts/
+│   └── migrate_production_data.py
 ├── .env.example
-├── .gitignore
-├── package.json
 ├── Pipfile
 ├── Pipfile.lock
 ├── render.yaml
@@ -126,7 +158,9 @@ Pluxis/
 └── README.md
 ```
 
-## Instalación local
+> El directorio `frontend/` contiene la aplicación que se compila para el despliegue del sitio estático en Render. El código frontend también se mantiene en `src/front/` por la estructura original del proyecto.
+
+## Instalación y ejecución local
 
 ### Requisitos
 
@@ -139,49 +173,46 @@ Pluxis/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone URL_DEL_REPOSITORIO
+git clone https://github.com/aldoalcivar95-byte/Pluxis.git
 cd Pluxis
 ```
 
-### 2. Instalar dependencias del frontend
+### 2. Instalar dependencias
+
+Desde la raíz del proyecto:
 
 ```bash
 npm install
-```
-
-### 3. Instalar dependencias del backend
-
-```bash
 pipenv install
 ```
 
-### 4. Configurar las variables de entorno
+### 3. Configurar variables de entorno
 
-Crear un archivo `.env` en la raíz del proyecto tomando como referencia `.env.example`.
+Crear un archivo `.env` en la raíz tomando como referencia `.env.example`. Configurar, como mínimo, la conexión a PostgreSQL y la clave JWT. Para utilizar todas las integraciones también se deben configurar las credenciales de Cloudinary, Geoapify y SMTP.
 
-Configurar las credenciales de PostgreSQL y los servicios externos.
+### 4. Arrancar el backend
 
-### 5. Ejecutar el backend
+Desde la raíz del proyecto:
 
 ```bash
 pipenv run python src/app.py
 ```
 
-### 6. Ejecutar el frontend
+### 5. Arrancar el frontend
 
-En otra terminal:
+En una segunda terminal, desde la raíz del proyecto:
 
 ```bash
-npm run dev
+npm run start -- --host 0.0.0.0
 ```
 
-### 7. Compilar para producción
+### 6. Generar la versión de producción
 
 ```bash
 npm run build
 ```
 
-Los archivos compilados se generan en la carpeta `dist/`.
+Vite genera los archivos compilados en `dist/`.
 
 ## Variables de entorno
 
@@ -190,7 +221,6 @@ Los archivos compilados se generan en la carpeta `dist/`.
 ```env
 DATABASE_URL=
 JWT_SECRET_KEY=
-
 FLASK_DEBUG=0
 
 CLOUDINARY_CLOUD_NAME=
@@ -198,7 +228,6 @@ CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 
 GEOAPIFY_API_KEY=
-
 FRONTEND_URL=
 
 MAIL_SERVER=smtp.gmail.com
@@ -216,33 +245,23 @@ MAIL_USE_TLS=true
 VITE_BACKEND_URL=
 ```
 
-`VITE_BACKEND_URL` debe contener la dirección base del backend, sin añadir `/api`.
+`VITE_BACKEND_URL` debe contener la URL base del backend, sin añadir `/api`.
 
-**Seguridad:** nunca subir el archivo `.env` ni publicar credenciales, contraseñas o claves privadas en GitHub.
-
-## Seguridad y autenticación
-
-- Autenticación mediante JWT.
-- Contraseñas protegidas mediante bcrypt.
-- Rutas privadas y control de acceso.
-- Gestión de sesiones y cierre de sesión cuando expira el token.
-- Configuración CORS.
-- Variables de entorno para credenciales y configuración.
-- Recuperación de contraseña mediante enlaces temporales.
+**Importante:** no subir el archivo `.env`, contraseñas, tokens ni claves privadas al repositorio.
 
 ## Despliegue
 
-El proyecto incluye archivos de configuración para preparar su despliegue en Render:
+La configuración de despliegue está preparada para Render mediante `render.yaml` y `render_build.sh`.
 
-- `render.yaml`
-- `render_build.sh`
-- `Procfile`
-- `Dockerfile.render`
+- El frontend se construye con Vite y se publica desde `frontend/dist`.
+- El backend se ejecuta con Gunicorn.
+- La base de datos de producción utiliza PostgreSQL.
+- Las variables de entorno deben configurarse también en el panel de Render; el archivo `.env` local no se copia automáticamente al entorno de producción.
 
-El despliegue en producción está pendiente de completar y verificar.
+## Autor
 
-## Autor: Aldo Alcivar Ferrin
+**Aldo Alcivar Ferrin**
 
-Proyecto Full Stack desarrollado como aplicación web para descubrir y gestionar eventos.
+Proyecto académico Full Stack.
 
-**Vive experiencias que merecen ser recordadas.**
+**Pluxis — Vive experiencias que merecen ser recordadas.**
