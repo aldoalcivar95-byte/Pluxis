@@ -1,6 +1,3 @@
-// =========================================================
-// INITIAL STORE
-// =========================================================
 
 export const initialStore = () => {
     const token = localStorage.getItem("token");
@@ -20,29 +17,15 @@ export const initialStore = () => {
     };
 };
 
-
-// =========================================================
-// STORE REDUCER
-// =========================================================
-
 export default function storeReducer(store, action = {}) {
 
     switch (action.type) {
-
-        // -------------------------------------------------
-        // COMPATIBILITY WITH TEMPLATE
-        // -------------------------------------------------
 
         case "set_hello":
             return {
                 ...store,
                 message: action.payload
             };
-
-
-        // -------------------------------------------------
-        // AUTH
-        // -------------------------------------------------
 
         case "login":
             localStorage.setItem(
@@ -63,7 +46,6 @@ export default function storeReducer(store, action = {}) {
                 message: "Login successful"
             };
 
-
         case "logout":
             localStorage.removeItem("token");
             localStorage.removeItem("user");
@@ -77,21 +59,11 @@ export default function storeReducer(store, action = {}) {
                 message: null
             };
 
-
-        // -------------------------------------------------
-        // USER
-        // -------------------------------------------------
-
         case "set_user":
             return {
                 ...store,
                 user: action.payload
             };
-
-
-        // -------------------------------------------------
-        // EVENTS
-        // -------------------------------------------------
 
         case "set_events":
             return {
@@ -101,7 +73,6 @@ export default function storeReducer(store, action = {}) {
                 error: null
             };
 
-
         case "add_event":
             return {
                 ...store,
@@ -110,7 +81,6 @@ export default function storeReducer(store, action = {}) {
                     action.payload
                 ]
             };
-
 
         case "update_event":
             return {
@@ -123,7 +93,6 @@ export default function storeReducer(store, action = {}) {
                 )
             };
 
-
         case "remove_event":
             return {
                 ...store,
@@ -131,11 +100,6 @@ export default function storeReducer(store, action = {}) {
                     event => event.id !== action.payload
                 )
             };
-
-
-        // -------------------------------------------------
-        // CATEGORIES
-        // -------------------------------------------------
 
         case "set_categories":
             return {
@@ -145,11 +109,6 @@ export default function storeReducer(store, action = {}) {
                 error: null
             };
 
-
-        // -------------------------------------------------
-        // BOOKINGS
-        // -------------------------------------------------
-
         case "set_bookings":
             return {
                 ...store,
@@ -157,7 +116,6 @@ export default function storeReducer(store, action = {}) {
                 loading: false,
                 error: null
             };
-
 
         case "add_booking":
             return {
@@ -167,7 +125,6 @@ export default function storeReducer(store, action = {}) {
                     action.payload
                 ]
             };
-
 
         case "update_booking":
             return {
@@ -180,7 +137,6 @@ export default function storeReducer(store, action = {}) {
                 )
             };
 
-
         case "remove_booking":
             return {
                 ...store,
@@ -189,17 +145,11 @@ export default function storeReducer(store, action = {}) {
                 )
             };
 
-
-        // -------------------------------------------------
-        // UI
-        // -------------------------------------------------
-
         case "set_loading":
             return {
                 ...store,
                 loading: action.payload
             };
-
 
         case "set_error":
             return {
@@ -208,17 +158,11 @@ export default function storeReducer(store, action = {}) {
                 loading: false
             };
 
-
         case "set_message":
             return {
                 ...store,
                 message: action.payload
             };
-
-
-        // -------------------------------------------------
-        // DEFAULT
-        // -------------------------------------------------
 
         default:
             throw Error(`Unknown action: ${action.type}`);

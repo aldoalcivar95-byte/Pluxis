@@ -46,7 +46,6 @@ export const EventDetail = () => {
                 setEvent(data.event);
                 setAvailableSeats(data.available_seats);
 
-                // If there are no seats, quantity cannot be booked.
                 if (data.available_seats === 0) {
                     setQuantity(0);
                 } else {

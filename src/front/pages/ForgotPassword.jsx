@@ -51,12 +51,6 @@ export const ForgotPassword = () => {
                 "Si existe una cuenta asociada a ese email, recibirás instrucciones para restablecer tu contraseña."
             );
 
-            // -------------------------------------------------
-            // DESARROLLO
-            // Mostramos el token únicamente porque todavía
-            // no tenemos configurado el envío real de emails.
-            // -------------------------------------------------
-
             if (data.development_reset_token) {
                 setResetToken(
                     data.development_reset_token

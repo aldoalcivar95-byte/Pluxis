@@ -11,11 +11,6 @@ import { Bookings } from "./pages/Bookings";
 import { Organizer } from "./pages/Organizer";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 
-
-// ============================================================
-// RUTA PRIVADA
-// ============================================================
-
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem("token");
 
@@ -26,11 +21,6 @@ const PrivateRoute = ({ children }) => {
 
     return children;
 };
-
-
-// ============================================================
-// RUTA PARA ORGANIZADORES
-// ============================================================
 
 const OrganizerRoute = ({ children }) => {
     const token = localStorage.getItem("token");
@@ -49,11 +39,6 @@ const OrganizerRoute = ({ children }) => {
     return children;
 };
 
-
-// ============================================================
-// ROUTER PRINCIPAL
-// ============================================================
-
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -61,10 +46,6 @@ export const router = createBrowserRouter([
         errorElement: <h1>Not found!</h1>,
 
         children: [
-
-            // ------------------------------------------------
-            // PÚBLICAS
-            // ------------------------------------------------
 
             {
                 index: true,
@@ -106,11 +87,6 @@ export const router = createBrowserRouter([
                 element: <PrivacyPolicy />,
             },
 
-
-            // ------------------------------------------------
-            // PRIVADAS
-            // ------------------------------------------------
-
             {
                 path: "bookings",
                 element: (
@@ -119,11 +95,6 @@ export const router = createBrowserRouter([
                     </PrivateRoute>
                 ),
             },
-
-
-            // ------------------------------------------------
-            // ORGANIZADOR
-            // ------------------------------------------------
 
             {
                 path: "organizer",

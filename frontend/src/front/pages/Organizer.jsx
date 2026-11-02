@@ -16,32 +16,15 @@ export const Organizer = () => {
     const [showForm, setShowForm] = useState(false);
     const [editingEvent, setEditingEvent] = useState(null);
 
-    // ==========================================
-    // MODAL DE ELIMINAR EVENTO
-    // ==========================================
-
     const [eventToDelete, setEventToDelete] = useState(null);
     const [deleting, setDeleting] = useState(false);
-
-    // ==========================================
-    // MODAL DE ERROR AL ELIMINAR
-    // ==========================================
 
     const [deleteError, setDeleteError] = useState("");
     const [showDeleteError, setShowDeleteError] = useState(false);
 
-    // ==========================================
-    // RESERVAS
-    // ==========================================
-
     const [expandedEvent, setExpandedEvent] = useState(null);
     const [bookings, setBookings] = useState({});
     const [loadingBookings, setLoadingBookings] = useState(false);
-
-
-    // ==========================================
-    // CARGAR DATOS DEL ORGANIZADOR
-    // ==========================================
 
     const loadOrganizerData = async () => {
         setLoading(true);
@@ -98,21 +81,11 @@ export const Organizer = () => {
         }
     };
 
-
-    // ==========================================
-    // CARGAR AL ENTRAR
-    // ==========================================
-
     useEffect(() => {
         if (store.token) {
             loadOrganizerData();
         }
     }, [store.token]);
-
-
-    // ==========================================
-    // OBTENER NOMBRE DE CATEGORÍA
-    // ==========================================
 
     const getCategoryName = (categoryId) => {
 
@@ -126,11 +99,6 @@ export const Organizer = () => {
             ? category.name
             : "Sin categoría";
     };
-
-
-    // ==========================================
-    // FORMATEAR FECHA EVENTO
-    // ==========================================
 
     const formatDate = (date) => {
 
@@ -150,11 +118,6 @@ export const Organizer = () => {
         );
     };
 
-
-    // ==========================================
-    // FORMATEAR FECHA RESERVA
-    // ==========================================
-
     const formatBookingDate = (date) => {
 
         if (!date) {
@@ -170,11 +133,6 @@ export const Organizer = () => {
             }
         );
     };
-
-
-    // ==========================================
-    // MOSTRAR / OCULTAR RESERVAS
-    // ==========================================
 
     const handleShowBookings = async (eventId) => {
 
@@ -226,11 +184,6 @@ export const Organizer = () => {
         }
     };
 
-
-    // ==========================================
-    // EVENTO CREADO
-    // ==========================================
-
     const handleEventCreated = () => {
 
         setShowForm(false);
@@ -238,11 +191,6 @@ export const Organizer = () => {
 
         loadOrganizerData();
     };
-
-
-    // ==========================================
-    // EDITAR EVENTO
-    // ==========================================
 
     const handleEditEvent = (event) => {
 
@@ -255,11 +203,6 @@ export const Organizer = () => {
         });
     };
 
-
-    // ==========================================
-    // EVENTO ACTUALIZADO
-    // ==========================================
-
     const handleEventUpdated = () => {
 
         setShowForm(false);
@@ -268,21 +211,11 @@ export const Organizer = () => {
         loadOrganizerData();
     };
 
-
-    // ==========================================
-    // CANCELAR FORMULARIO
-    // ==========================================
-
     const handleCancelForm = () => {
 
         setShowForm(false);
         setEditingEvent(null);
     };
-
-
-    // ==========================================
-    // ABRIR MODAL DE ELIMINACIÓN
-    // ==========================================
 
     const handleRequestDelete = (event) => {
 
@@ -291,11 +224,6 @@ export const Organizer = () => {
 
         setEventToDelete(event);
     };
-
-
-    // ==========================================
-    // ELIMINAR EVENTO
-    // ==========================================
 
     const handleDeleteEvent = async () => {
 
@@ -316,10 +244,6 @@ export const Organizer = () => {
             );
 
             const data = await response.json();
-
-            // ======================================
-            // ERROR DEL BACKEND
-            // ======================================
 
             if (!response.ok) {
 
@@ -346,11 +270,6 @@ export const Organizer = () => {
                 return;
             }
 
-
-            // ======================================
-            // ELIMINACIÓN CORRECTA
-            // ======================================
-
             setEventToDelete(null);
 
             await loadOrganizerData();
@@ -375,11 +294,6 @@ export const Organizer = () => {
         }
     };
 
-
-    // ==========================================
-    // LOADING
-    // ==========================================
-
     if (loading) {
 
         return (
@@ -397,14 +311,8 @@ export const Organizer = () => {
         );
     }
 
-
-    // ==========================================
-    // RENDER
-    // ==========================================
-
     return (
         <div className="container py-5">
-
 
             {/* ======================================
                 CABECERA
@@ -424,7 +332,6 @@ export const Organizer = () => {
 
                 </div>
 
-
                 {!showForm && (
 
                     <button
@@ -441,7 +348,6 @@ export const Organizer = () => {
                 )}
 
             </div>
-
 
             {/* ======================================
                 FORMULARIO
@@ -462,7 +368,6 @@ export const Organizer = () => {
 
             )}
 
-
             {/* ======================================
                 ERROR GENERAL
             ====================================== */}
@@ -474,7 +379,6 @@ export const Organizer = () => {
                 </div>
 
             )}
-
 
             {/* ======================================
                 SIN EVENTOS
@@ -494,7 +398,6 @@ export const Organizer = () => {
                             Cuando crees un evento,
                             aparecerá aquí.
                         </p>
-
 
                         {!showForm && (
 
@@ -519,7 +422,6 @@ export const Organizer = () => {
 
                 <>
 
-
                     {/* ==================================
                         CONTADOR
                     ================================== */}
@@ -536,7 +438,6 @@ export const Organizer = () => {
 
                     </div>
 
-
                     {/* ==================================
                         EVENTOS
                     ================================== */}
@@ -551,7 +452,6 @@ export const Organizer = () => {
                             >
 
                                 <div className="card h-100 shadow-sm overflow-hidden">
-
 
                                     {/* IMAGEN */}
 
@@ -584,9 +484,7 @@ export const Organizer = () => {
 
                                     )}
 
-
                                     <div className="card-body d-flex flex-column">
-
 
                                         {/* CATEGORÍA */}
 
@@ -598,20 +496,17 @@ export const Organizer = () => {
 
                                         </span>
 
-
                                         {/* TÍTULO */}
 
                                         <h4 className="card-title">
                                             {event.title}
                                         </h4>
 
-
                                         {/* DESCRIPCIÓN */}
 
                                         <p className="text-muted">
                                             {event.description}
                                         </p>
-
 
                                         {/* DATOS DEL EVENTO */}
 
@@ -629,7 +524,6 @@ export const Organizer = () => {
 
                                             </p>
 
-
                                             <p className="mb-1">
 
                                                 <strong>
@@ -643,7 +537,6 @@ export const Organizer = () => {
 
                                             </p>
 
-
                                             <p className="mb-1">
 
                                                 <strong>
@@ -653,7 +546,6 @@ export const Organizer = () => {
                                                 {event.location}
 
                                             </p>
-
 
                                             <p className="mb-1">
 
@@ -667,7 +559,6 @@ export const Organizer = () => {
 
                                         </div>
 
-
                                         {/* ==================================
                                             RESUMEN DE RESERVAS
                                         ================================== */}
@@ -677,7 +568,6 @@ export const Organizer = () => {
                                             <h6 className="mb-3">
                                                 Resumen de reservas
                                             </h6>
-
 
                                             <div className="d-flex justify-content-between mb-2">
 
@@ -691,7 +581,6 @@ export const Organizer = () => {
 
                                             </div>
 
-
                                             <div className="d-flex justify-content-between mb-2">
 
                                                 <span>
@@ -704,7 +593,6 @@ export const Organizer = () => {
 
                                             </div>
 
-
                                             <div className="d-flex justify-content-between mb-2">
 
                                                 <span>
@@ -716,7 +604,6 @@ export const Organizer = () => {
                                                 </strong>
 
                                             </div>
-
 
                                             <div className="d-flex justify-content-between">
 
@@ -738,13 +625,11 @@ export const Organizer = () => {
 
                                         </div>
 
-
                                         {/* ==================================
                                             BOTONES
                                         ================================== */}
 
                                         <div className="mt-auto d-grid gap-2">
-
 
                                             <Link
                                                 to={`/events/${event.id}`}
@@ -752,7 +637,6 @@ export const Organizer = () => {
                                             >
                                                 Ver evento
                                             </Link>
-
 
                                             <button
                                                 type="button"
@@ -770,7 +654,6 @@ export const Organizer = () => {
 
                                             </button>
 
-
                                             <button
                                                 type="button"
                                                 className="btn btn-outline-warning"
@@ -782,7 +665,6 @@ export const Organizer = () => {
                                             >
                                                 Editar evento
                                             </button>
-
 
                                             <button
                                                 type="button"
@@ -798,7 +680,6 @@ export const Organizer = () => {
 
                                         </div>
 
-
                                         {/* ==================================
                                             DETALLE DE RESERVAS
                                         ================================== */}
@@ -807,13 +688,11 @@ export const Organizer = () => {
 
                                             <div className="mt-3 border rounded p-3 bg-white">
 
-
                                                 <div className="d-flex justify-content-between align-items-center mb-3">
 
                                                     <h5 className="mb-0">
                                                         Reservas
                                                     </h5>
-
 
                                                     {bookings[event.id] && (
 
@@ -830,7 +709,6 @@ export const Organizer = () => {
                                                     )}
 
                                                 </div>
-
 
                                                 {/* CARGANDO */}
 
@@ -849,12 +727,8 @@ export const Organizer = () => {
 
                                                     </div>
 
-
                                                 ) : !bookings[event.id] ||
                                                   bookings[event.id].length === 0 ? (
-
-
-                                                    /* SIN RESERVAS */
 
                                                     <div className="text-center py-3">
 
@@ -864,11 +738,7 @@ export const Organizer = () => {
 
                                                     </div>
 
-
                                                 ) : (
-
-
-                                                    /* TABLA */
 
                                                     <div className="table-responsive">
 
@@ -902,7 +772,6 @@ export const Organizer = () => {
 
                                                             </thead>
 
-
                                                             <tbody>
 
                                                                 {bookings[event.id].map(
@@ -919,7 +788,6 @@ export const Organizer = () => {
 
                                                                             </td>
 
-
                                                                             <td>
 
                                                                                 <span className="small text-muted">
@@ -929,7 +797,6 @@ export const Organizer = () => {
 
                                                                             </td>
 
-
                                                                             <td className="text-center">
 
                                                                                 <strong>
@@ -937,7 +804,6 @@ export const Organizer = () => {
                                                                                 </strong>
 
                                                                             </td>
-
 
                                                                             <td>
 
@@ -950,7 +816,6 @@ export const Organizer = () => {
                                                                                 </span>
 
                                                                             </td>
-
 
                                                                             <td className="text-center">
 
@@ -1001,7 +866,6 @@ export const Organizer = () => {
 
             )}
 
-
             {/* ==================================================
                 MODAL DE CONFIRMACIÓN DE ELIMINACIÓN
             ================================================== */}
@@ -1020,7 +884,6 @@ export const Organizer = () => {
                             zIndex: 1040
                         }}
                     ></div>
-
 
                     {/* MODAL */}
 
@@ -1046,7 +909,6 @@ export const Organizer = () => {
 
                                 <div className="modal-body text-center p-4 p-md-5">
 
-
                                     {/* ICONO */}
 
                                     <div
@@ -1062,7 +924,6 @@ export const Organizer = () => {
                                         🗑️
                                     </div>
 
-
                                     {/* TÍTULO */}
 
                                     <h3
@@ -1072,13 +933,11 @@ export const Organizer = () => {
                                         ¿Eliminar este evento?
                                     </h3>
 
-
                                     {/* MENSAJE */}
 
                                     <p className="text-muted mb-2">
                                         Estás a punto de eliminar:
                                     </p>
-
 
                                     {/* NOMBRE EVENTO */}
 
@@ -1087,7 +946,6 @@ export const Organizer = () => {
                                         {eventToDelete.title}
 
                                     </p>
-
 
                                     {/* ADVERTENCIA */}
 
@@ -1101,11 +959,9 @@ export const Organizer = () => {
 
                                     </p>
 
-
                                     {/* BOTONES */}
 
                                     <div className="d-flex flex-column flex-sm-row gap-2">
-
 
                                         {/* CONSERVAR */}
 
@@ -1119,7 +975,6 @@ export const Organizer = () => {
                                         >
                                             Conservar evento
                                         </button>
-
 
                                         {/* ELIMINAR */}
 
@@ -1168,7 +1023,6 @@ export const Organizer = () => {
 
             )}
 
-
             {/* ==================================================
                 MODAL DE ERROR AL ELIMINAR
             ================================================== */}
@@ -1190,7 +1044,6 @@ export const Organizer = () => {
                             setShowDeleteError(false)
                         }
                     ></div>
-
 
                     {/* MODAL */}
 
@@ -1219,7 +1072,6 @@ export const Organizer = () => {
 
                                 <div className="modal-body text-center p-4 p-md-5">
 
-
                                     {/* ICONO */}
 
                                     <div
@@ -1235,7 +1087,6 @@ export const Organizer = () => {
                                         ⚠️
                                     </div>
 
-
                                     {/* TÍTULO */}
 
                                     <h3
@@ -1245,7 +1096,6 @@ export const Organizer = () => {
                                         No se puede eliminar el evento
                                     </h3>
 
-
                                     {/* ERROR */}
 
                                     <p className="text-muted mb-3">
@@ -1253,7 +1103,6 @@ export const Organizer = () => {
                                         {deleteError}
 
                                     </p>
-
 
                                     {/* EXPLICACIÓN */}
 
@@ -1266,7 +1115,6 @@ export const Organizer = () => {
                                         eliminarlo.
 
                                     </p>
-
 
                                     {/* BOTÓN */}
 

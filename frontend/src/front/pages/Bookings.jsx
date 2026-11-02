@@ -9,16 +9,9 @@ export const Bookings = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // Reserva que queremos cancelar
     const [bookingToCancel, setBookingToCancel] = useState(null);
 
-    // Estado mientras se cancela la reserva
     const [cancelling, setCancelling] = useState(false);
-
-
-    // --------------------------------------------------
-    // FORMATEAR FECHA DEL EVENTO
-    // --------------------------------------------------
 
     const formatEventDate = (date) => {
         if (!date) {
@@ -35,11 +28,6 @@ export const Bookings = () => {
         );
     };
 
-
-    // --------------------------------------------------
-    // FORMATEAR FECHA DE RESERVA
-    // --------------------------------------------------
-
     const formatBookingDate = (date) => {
         if (!date) {
             return "Fecha no disponible";
@@ -55,11 +43,6 @@ export const Bookings = () => {
         );
     };
 
-
-    // --------------------------------------------------
-    // LEER RESPUESTAS DEL BACKEND
-    // --------------------------------------------------
-
     const readResponse = async (response) => {
         const contentType =
             response.headers.get("content-type") || "";
@@ -72,11 +55,6 @@ export const Bookings = () => {
             `El servidor devolvió una respuesta inesperada (${response.status}).`
         );
     };
-
-
-    // --------------------------------------------------
-    // CARGAR RESERVAS
-    // --------------------------------------------------
 
     const loadBookings = async () => {
         setLoading(true);
@@ -117,21 +95,11 @@ export const Bookings = () => {
         }
     };
 
-
-    // --------------------------------------------------
-    // CARGAR AL ENTRAR EN LA PÁGINA
-    // --------------------------------------------------
-
     useEffect(() => {
         if (store.token) {
             loadBookings();
         }
     }, [store.token]);
-
-
-    // --------------------------------------------------
-    // CANCELAR RESERVA
-    // --------------------------------------------------
 
     const cancelBooking = async () => {
 
@@ -160,13 +128,11 @@ export const Bookings = () => {
                 );
             }
 
-            // Actualizamos la reserva en el estado global
             dispatch({
                 type: "update_booking",
                 payload: data.booking,
             });
 
-            // Cerramos el modal
             setBookingToCancel(null);
 
         } catch (error) {
@@ -184,11 +150,6 @@ export const Bookings = () => {
             setCancelling(false);
         }
     };
-
-
-    // --------------------------------------------------
-    // LOADING
-    // --------------------------------------------------
 
     if (loading) {
         return (
@@ -215,11 +176,6 @@ export const Bookings = () => {
         );
     }
 
-
-    // --------------------------------------------------
-    // RENDER
-    // --------------------------------------------------
-
     return (
         <div className="container py-5">
 
@@ -244,7 +200,6 @@ export const Bookings = () => {
 
             </div>
 
-
             {/* ERROR */}
 
             {error && (
@@ -259,7 +214,6 @@ export const Bookings = () => {
                     {error}
                 </div>
             )}
-
 
             {/* SIN RESERVAS */}
 
@@ -298,8 +252,6 @@ export const Bookings = () => {
 
             ) : (
 
-                /* RESERVAS */
-
                 <div className="row g-4">
 
                     {store.bookings.map((booking) => {
@@ -329,7 +281,6 @@ export const Bookings = () => {
                                         />
                                     )}
 
-
                                     {/* CONTENIDO */}
 
                                     <div className="card-body d-flex flex-column">
@@ -342,7 +293,6 @@ export const Bookings = () => {
                                                 : `Evento #${booking.event_id}`}
                                         </h4>
 
-
                                         {/* INFORMACIÓN DEL EVENTO */}
 
                                         {event && (
@@ -351,7 +301,6 @@ export const Bookings = () => {
                                                 <p className="text-muted small mb-3">
                                                     {event.description}
                                                 </p>
-
 
                                                 <div className="small">
 
@@ -364,7 +313,6 @@ export const Bookings = () => {
                                                         )}
                                                     </p>
 
-
                                                     <p className="mb-2">
                                                         <strong>
                                                             Hora:
@@ -375,14 +323,12 @@ export const Bookings = () => {
                                                         )}
                                                     </p>
 
-
                                                     <p className="mb-2">
                                                         <strong>
                                                             Lugar:
                                                         </strong>{" "}
                                                         {event.location}
                                                     </p>
-
 
                                                     <p className="mb-3">
                                                         <strong>
@@ -396,9 +342,7 @@ export const Bookings = () => {
                                             </>
                                         )}
 
-
                                         <hr />
-
 
                                         {/* INFORMACIÓN DE LA RESERVA */}
 
@@ -414,7 +358,6 @@ export const Bookings = () => {
                                                 </span>
                                             </p>
 
-
                                             <p className="mb-2 d-flex justify-content-between">
                                                 <strong>
                                                     Fecha de reserva:
@@ -426,7 +369,6 @@ export const Bookings = () => {
                                                     )}
                                                 </span>
                                             </p>
-
 
                                             <p className="mb-3 d-flex justify-content-between align-items-center">
 
@@ -453,7 +395,6 @@ export const Bookings = () => {
 
                                         </div>
 
-
                                         {/* BOTONES */}
 
                                         <div className="d-flex gap-2 mt-auto">
@@ -464,7 +405,6 @@ export const Bookings = () => {
                                             >
                                                 Ver evento
                                             </Link>
-
 
                                             {booking.status ===
                                                 "confirmed" && (
@@ -498,7 +438,6 @@ export const Bookings = () => {
 
             )}
 
-
             {/* ==================================================
                 MODAL DE CONFIRMACIÓN
             ================================================== */}
@@ -520,7 +459,6 @@ export const Bookings = () => {
                             setBookingToCancel(null)
                         }
                     ></div>
-
 
                     {/* MODAL */}
 
@@ -568,13 +506,11 @@ export const Bookings = () => {
                                         ⚠️
                                     </div>
 
-
                                     {/* TÍTULO */}
 
                                     <h4 className="fw-bold mb-3">
                                         Cancelar reserva
                                     </h4>
-
 
                                     {/* MENSAJE */}
 
@@ -582,7 +518,6 @@ export const Bookings = () => {
                                         ¿Estás seguro de que quieres
                                         cancelar esta reserva?
                                     </p>
-
 
                                     {/* EVENTO */}
 
@@ -596,7 +531,6 @@ export const Bookings = () => {
                                             `Evento #${bookingToCancel.event_id}`}
                                     </div>
 
-
                                     {/* AVISO */}
 
                                     <div
@@ -609,7 +543,6 @@ export const Bookings = () => {
                                         </strong>
                                         .
                                     </div>
-
 
                                     {/* BOTONES */}
 
@@ -625,7 +558,6 @@ export const Bookings = () => {
                                         >
                                             Volver
                                         </button>
-
 
                                         <button
                                             type="button"

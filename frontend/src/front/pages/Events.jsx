@@ -101,8 +101,6 @@ export const Events = () => {
 
             const params = new URLSearchParams({ radius_km: radius });
 
-            // Si el usuario ha obtenido su GPS, reutilizamos sus coordenadas.
-            // Nunca enviamos el texto "Tu ubicación actual" a Geoapify.
             if (currentCoordinates) {
                 params.set("lat", String(currentCoordinates.lat));
                 params.set("lon", String(currentCoordinates.lon));

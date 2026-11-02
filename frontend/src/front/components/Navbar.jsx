@@ -34,7 +34,6 @@ export const Navbar = () => {
                     PLUXIS
                 </Link>
 
-
                 {/* ==================================================
                     BOTÓN MOBILE
                 ================================================== */}
@@ -50,7 +49,6 @@ export const Navbar = () => {
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
-
 
                 {/* ==================================================
                     NAVEGACIÓN
@@ -74,7 +72,6 @@ export const Navbar = () => {
                             </Link>
                         </li>
 
-
                         {/* Eventos */}
 
                         <li className="nav-item">
@@ -85,7 +82,6 @@ export const Navbar = () => {
                                 Eventos
                             </Link>
                         </li>
-
 
                         {/* Mis reservas */}
 
@@ -100,7 +96,6 @@ export const Navbar = () => {
                             </li>
                         )}
 
-
                         {/* Panel organizador */}
 
                         {token && user?.role === "organizer" && (
@@ -114,7 +109,6 @@ export const Navbar = () => {
                             </li>
                         )}
 
-
                         {/* Política de privacidad */}
 
                         <li className="nav-item">
@@ -127,7 +121,6 @@ export const Navbar = () => {
                         </li>
 
                     </ul>
-
 
                     {/* ==================================================
                         ZONA USUARIO

@@ -214,7 +214,6 @@ export const Home = () => {
                     overflow: hidden;
                 }
 
-
                 .pluxis-hero {
                     position: relative;
                     min-height: 540px;
@@ -223,7 +222,6 @@ export const Home = () => {
                     overflow: hidden;
                     isolation: isolate;
                 }
-
 
                 
 
@@ -235,7 +233,6 @@ export const Home = () => {
                     z-index: 5;
                 }
 
-
                 
 
                 .pluxis-hero-content {
@@ -243,7 +240,6 @@ export const Home = () => {
                     width: 50%;
                     z-index: 6;
                 }
-
 
                 .pluxis-hero-badge {
                     display: inline-block;
@@ -258,7 +254,6 @@ export const Home = () => {
                     box-shadow: 0 5px 15px rgba(13, 110, 253, 0.15);
                 }
 
-
                 .pluxis-hero-title {
                     margin: 0;
                     font-size: clamp(48px, 5vw, 72px);
@@ -269,11 +264,9 @@ export const Home = () => {
                     max-width: 600px;
                 }
 
-
                 .pluxis-hero-title-highlight {
                     color: #0d6efd;
                 }
-
 
                 .pluxis-hero-description {
                     margin-top: 30px;
@@ -284,7 +277,6 @@ export const Home = () => {
                     line-height: 1.65;
                 }
 
-
                 .pluxis-hero-description-secondary {
                     margin-top: 22px;
                     max-width: 550px;
@@ -292,7 +284,6 @@ export const Home = () => {
                     font-size: 15px;
                     line-height: 1.7;
                 }
-
 
                 
 
@@ -302,7 +293,6 @@ export const Home = () => {
                     margin-top: 28px;
                     flex-wrap: wrap;
                 }
-
 
                 .pluxis-hero-button-primary {
                     display: inline-flex;
@@ -329,14 +319,12 @@ export const Home = () => {
                         background 0.2s ease;
                 }
 
-
                 .pluxis-hero-button-primary:hover {
                     color: #ffffff;
                     background: #0b5ed7;
                     transform: translateY(-2px);
                     box-shadow: 0 8px 20px rgba(13, 110, 253, 0.25);
                 }
-
 
                 .pluxis-hero-button-secondary {
                     display: inline-flex;
@@ -362,13 +350,11 @@ export const Home = () => {
                         background 0.2s ease;
                 }
 
-
                 .pluxis-hero-button-secondary:hover {
                     color: #20242a;
                     background: #ffffff;
                     transform: translateY(-2px);
                 }
-
 
                 
 
@@ -409,7 +395,6 @@ export const Home = () => {
                         );
                 }
 
-
                 .pluxis-hero-image {
                     width: 100%;
                     height: 100%;
@@ -421,7 +406,6 @@ export const Home = () => {
 
                     transform: scale(1.08);
                 }
-
 
                 
 
@@ -458,7 +442,6 @@ export const Home = () => {
                         );
                 }
 
-
                 
 
                 .pluxis-about {
@@ -467,7 +450,6 @@ export const Home = () => {
                     background: #f8f9fa;
                     text-align: center;
                 }
-
 
                 .pluxis-about-label {
                     color: #0d6efd;
@@ -478,7 +460,6 @@ export const Home = () => {
                     margin-bottom: 14px;
                 }
 
-
                 .pluxis-about-title {
                     margin: 0 auto;
                     max-width: 720px;
@@ -488,11 +469,9 @@ export const Home = () => {
                     color: #20242a;
                 }
 
-
                 .pluxis-about-title span {
                     color: #0d6efd;
                 }
-
 
                 .pluxis-about-text {
                     max-width: 720px;
@@ -502,7 +481,6 @@ export const Home = () => {
                     line-height: 1.75;
                 }
 
-
                 
 
                 .pluxis-categories {
@@ -510,12 +488,10 @@ export const Home = () => {
                     background: #ffffff;
                 }
 
-
                 .pluxis-section-container {
                     width: min(1180px, 100%);
                     margin: 0 auto;
                 }
-
 
                 .pluxis-section-title {
                     font-size: 30px;
@@ -523,7 +499,6 @@ export const Home = () => {
                     color: #20242a;
                     margin-bottom: 28px;
                 }
-
 
                 .pluxis-category-card {
                     height: 100%;
@@ -535,12 +510,10 @@ export const Home = () => {
                         box-shadow 0.2s ease;
                 }
 
-
                 .pluxis-category-card:hover {
                     transform: translateY(-4px);
                     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
                 }
-
 
                 
 
@@ -548,7 +521,6 @@ export const Home = () => {
                     padding: 75px 24px 100px;
                     background: #f8f9fa;
                 }
-
 
                 .pluxis-event-card {
                     height: 100%;
@@ -567,14 +539,12 @@ export const Home = () => {
                         box-shadow 0.2s ease;
                 }
 
-
                 .pluxis-event-card:hover {
                     transform: translateY(-5px);
 
                     box-shadow:
                         0 14px 30px rgba(0,0,0,0.10);
                 }
-
 
                 .pluxis-event-image {
                     width: 100%;
@@ -584,7 +554,6 @@ export const Home = () => {
 
                     display: block;
                 }
-
 
                 .pluxis-event-placeholder {
                     height: 220px;
@@ -597,7 +566,6 @@ export const Home = () => {
                     color: #6c757d;
                 }
 
-
                 
 
                 @media (max-width: 991px) {
@@ -606,22 +574,18 @@ export const Home = () => {
                         min-height: auto;
                     }
 
-
                     .pluxis-hero-container {
                         padding-top: 55px;
                         padding-bottom: 55px;
                     }
 
-
                     .pluxis-hero-content {
                         width: 58%;
                     }
 
-
                     .pluxis-hero-title {
                         font-size: 52px;
                     }
-
 
                     .pluxis-hero-image-wrapper {
                         width: 68%;
@@ -629,41 +593,34 @@ export const Home = () => {
                     }
                 }
 
-
                 @media (max-width: 767px) {
 
                     .pluxis-hero {
                         min-height: auto;
                     }
 
-
                     .pluxis-hero-container {
                         padding-top: 45px;
                         padding-bottom: 45px;
                     }
 
-
                     .pluxis-hero-content {
                         width: 100%;
                     }
-
 
                     .pluxis-hero-title {
                         font-size: 44px;
                         letter-spacing: -1.5px;
                     }
 
-
                     .pluxis-hero-description {
                         font-size: 16px;
                         max-width: 100%;
                     }
 
-
                     .pluxis-hero-description-secondary {
                         font-size: 14px;
                     }
-
 
                     
 
@@ -697,7 +654,6 @@ export const Home = () => {
                             );
                     }
 
-
                     .pluxis-hero-image-fade {
                         background:
                             linear-gradient(
@@ -709,18 +665,15 @@ export const Home = () => {
                             );
                     }
 
-
                     .pluxis-hero-buttons {
                         position: relative;
                         z-index: 10;
                     }
 
-
                     .pluxis-about {
                         padding-top: 65px;
                         padding-bottom: 65px;
                     }
-
 
                     .pluxis-categories,
                     .pluxis-events {
@@ -730,7 +683,6 @@ export const Home = () => {
                 }
 
             `}</style>
-
 
             <div className="pluxis-home">
 
@@ -752,7 +704,6 @@ export const Home = () => {
 
                     </div>
 
-
                     {}
 
                     <div className="pluxis-hero-container">
@@ -762,7 +713,6 @@ export const Home = () => {
                             <span className="pluxis-hero-badge">
                                 DESCUBRE · RESERVA · VIVE
                             </span>
-
 
                             <h1 className="pluxis-hero-title">
 
@@ -783,7 +733,6 @@ export const Home = () => {
 
                             </h1>
 
-
                             <p className="pluxis-hero-description">
 
                                 Pluxis es una plataforma para descubrir,
@@ -793,7 +742,6 @@ export const Home = () => {
 
                             </p>
 
-
                             <p className="pluxis-hero-description-secondary">
 
                                 Encuentra tu próximo plan, descubre nuevas
@@ -801,7 +749,6 @@ export const Home = () => {
                                 rápida, sencilla y segura.
 
                             </p>
-
 
                             <div className="pluxis-hero-buttons">
 
@@ -811,7 +758,6 @@ export const Home = () => {
                                 >
                                     Explorar eventos
                                 </Link>
-
 
                                 <a
                                     href="#sobre-pluxis"
@@ -828,7 +774,6 @@ export const Home = () => {
 
                 </section>
 
-
                 {}
 
                 <section
@@ -842,7 +787,6 @@ export const Home = () => {
                             SOBRE PLUXIS
                         </div>
 
-
                         <h2 className="pluxis-about-title">
 
                             Todo lo que buscas para{" "}
@@ -852,7 +796,6 @@ export const Home = () => {
                             </span>
 
                         </h2>
-
 
                         <p className="pluxis-about-text">
 
@@ -868,7 +811,6 @@ export const Home = () => {
 
                 </section>
 
-
                 {}
 
                 <section className="pluxis-categories">
@@ -878,7 +820,6 @@ export const Home = () => {
                         <h2 className="pluxis-section-title">
                             Explora por categorías
                         </h2>
-
 
                         {loading ? (
 
@@ -931,7 +872,6 @@ export const Home = () => {
                     </div>
 
                 </section>
-
 
                 {}
 
@@ -1025,7 +965,6 @@ export const Home = () => {
 
                                 </div>
 
-
                                 <p className="mt-3">
                                     Cargando eventos...
                                 </p>
@@ -1034,7 +973,6 @@ export const Home = () => {
 
                         )}
 
-
                         {error && (
 
                             <div className="alert alert-danger">
@@ -1042,7 +980,6 @@ export const Home = () => {
                             </div>
 
                         )}
-
 
                         {!loading &&
                             !error &&
@@ -1055,7 +992,6 @@ export const Home = () => {
                                 </div>
 
                             )}
-
 
                         {!loading &&
                             !error &&
@@ -1094,7 +1030,6 @@ export const Home = () => {
 
                                                 )}
 
-
                                                 <div className="card-body d-flex flex-column">
 
                                                     {}
@@ -1107,7 +1042,6 @@ export const Home = () => {
 
                                                     </span>
 
-
                                                     {}
 
                                                     <h3 className="card-title">
@@ -1116,7 +1050,6 @@ export const Home = () => {
 
                                                     </h3>
 
-
                                                     {}
 
                                                     <p className="card-text text-muted">
@@ -1124,7 +1057,6 @@ export const Home = () => {
                                                         {event.description}
 
                                                     </p>
-
 
                                                     {}
 
@@ -1142,7 +1074,6 @@ export const Home = () => {
 
                                                         </p>
 
-
                                                         <p className="mb-1">
 
                                                             <strong>
@@ -1154,7 +1085,6 @@ export const Home = () => {
                                                             )}
 
                                                         </p>
-
 
                                                         <p className="mb-1">
 
@@ -1184,7 +1114,6 @@ export const Home = () => {
                                                                 : `${event.price} €`}
 
                                                         </p>
-
 
                                                         <Link
                                                             to={`/events/${event.id}`}
