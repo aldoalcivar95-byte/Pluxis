@@ -32,15 +32,21 @@ app.url_map.strict_slashes = False
 # CORS
 # ---------------------------------------------------------
 
+frontend_url = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
+allowed_origins = [
+    "https://pluxis.onrender.com",
+    "https://crispy-engine-97v5w95xv5vgfp9v6-3000.app.github.dev",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+if frontend_url and frontend_url not in allowed_origins:
+    allowed_origins.append(frontend_url)
+
 CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": [
-                "https://crispy-engine-97v5w95xv5vgfp9v6-3000.app.github.dev",
-                "http://localhost:3000",
-                "http://127.0.0.1:3000",
-            ],
+            "origins": allowed_origins,
             "methods": [
                 "GET",
                 "POST",
