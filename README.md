@@ -2,35 +2,41 @@
 
 **Vive experiencias que merecen ser recordadas.**
 
-Pluxis es una aplicación web Full Stack para descubrir eventos, consultar actividades cercanas y gestionar reservas. La plataforma contempla dos perfiles principales: **cliente**, que explora y reserva eventos, y **organizador**, que publica y administra sus propios eventos.
+Pluxis es una aplicación web Full Stack para descubrir, explorar y reservar eventos. Permite consultar actividades, buscar eventos cercanos, gestionar reservas y acceder a funcionalidades personalizadas mediante autenticación de usuarios.
 
-Proyecto académico desarrollado con React, Flask y PostgreSQL.
+Proyecto académico desarrollado con React y Vite en el frontend, Python y Flask en el backend y PostgreSQL como base de datos.
 
-## Dirección de la página web y acceso a la demo
+## 🌐 Página web oficial — Acceso a Pluxis
 
-La aplicación Pluxis está publicada y se puede consultar desde cualquier navegador mediante la siguiente dirección:
+<blockquote>
 
-<https://pluxis.onrender.com>
+<strong>Aplicación web pública:</strong>
 
-- **Nombre del sitio:** Pluxis
-- **URL pública del frontend:** [https://pluxis.onrender.com](https://pluxis.onrender.com)
-- **URL base del backend (API REST):** [https://pluxis-api.onrender.com](https://pluxis-api.onrender.com)
-- **Prefijo de los endpoints de la API:** `https://pluxis-api.onrender.com/api`
+# <a href="https://pluxis.onrender.com">https://pluxis.onrender.com</a>
 
-Para evaluar la aplicación, abre primero la dirección del frontend. Desde esa página se puede navegar por el catálogo de eventos, consultar sus detalles, iniciar sesión y probar las funciones correspondientes al perfil de cliente o de organizador.
+Esta es la dirección que debes abrir para utilizar Pluxis y la que debes compartir con el profesor para evaluar el proyecto.
 
-La dirección del frontend es la que debe compartirse con los usuarios y con el profesor. La dirección de la API se incluye como referencia técnica para identificar el servicio backend que utiliza la aplicación.
+**Backend / API REST:** https://pluxis-api.onrender.com
 
-### Cuentas de demostración
+**Endpoints de la API:** `https://pluxis-api.onrender.com/api`
 
-Estas credenciales están incluidas para facilitar la evaluación de los dos roles de la aplicación:
+</blockquote>
 
-| Perfil | Correo electrónico | Contraseña |
+## 🔑 Cuentas de demostración
+
+Puedes acceder directamente con estas cuentas para probar los dos perfiles disponibles:
+
+| PERFIL | CORREO ELECTRÓNICO | CONTRASEÑA |
 |---|---|---|
-| Organizador | `laura@eventify.com` | `123456` |
-| Cliente | `carlos@eventify.com` | `123456` |
+| **ORGANIZADOR** | **`laura@eventify.com`** | **`123456`** |
+| **CLIENTE / USUARIO** | **`carlos@eventify.com`** | **`123456`** |
 
-**Nota para la evaluación:** el registro público crea cuentas de cliente. Los permisos de organizador se asignan de forma controlada y no se seleccionan desde el formulario de registro. Las cuentas anteriores son las credenciales de demostración documentadas para probar ambos perfiles.
+### Diferencia entre los perfiles
+
+- **Organizador:** puede crear, publicar, editar y gestionar sus propios eventos, así como consultar las reservas asociadas.
+- **Cliente / Usuario:** puede explorar eventos, consultar sus detalles, buscar actividades cercanas, reservar entradas, consultar sus reservas y cancelar sus propias reservas.
+
+**Importante:** cualquier persona puede crear una cuenta de cliente desde el formulario de registro de la web. Por motivos de seguridad, el registro público no permite crear cuentas de organizador ni elegir ese rol. La asignación de permisos de organizador se gestiona de forma controlada por la administración del proyecto.
 
 ## Funcionalidades
 
