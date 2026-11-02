@@ -1,144 +1,202 @@
 #!/usr/bin/env python3
-"""Merge Pluxis data from DATABASE_URL into RENDER_DATABASE_URL safely.
+"""Importa datos de DATABASE_URL a RENDER_DATABASE_URL sin sobrescribir filas.
 
-Matches users by normalized email and categories by normalized name.
-Matches events by title/date/time/location/organizer/category, then maps
-bookings through the resolved user and event IDs. Dry-run is the default;
-pass --apply to write. Existing rows are never deleted or overwritten.
+Por defecto solo simula. Para aplicar: pipenv run python scripts/migrate_production_data.py --apply
+Usuarios: email normalizado. Categorías: nombre normalizado.
+Eventos: título, fecha, hora, ubicación, organizador y categoría.
+Reservas: usuario, evento, fecha, cantidad y estado.
 """
 import argparse
 import os
 import sys
-from datetime import date, datetime, time
 
-from sqlalchemy import MetaData, Table, create_engine, select, func, text
-from sqlalchemy.engine import URL
+from sqlalchemy import MetaData, Table, create_engine, select, text
 
 
-def normalize_url(value):
+TABLES = ("user", "category", "event", "booking")
+
+
+def db_url(name):
+    value = os.getenv(name)
     if not value:
-        raise RuntimeError("Falta una URL de base de datos.")
+        raise RuntimeError(f"Falta la variable {name}.")
     return value.replace("postgres://", "postgresql://", 1)
 
 
 def norm(value):
-    return (value or "").strip().casefold()
+    return str(value or "").strip().casefold()
 
 
-def rows(conn, table):
-    return [dict(row) for row in conn.execute(select(table)).mappings().all()]
+def load(conn, table):
+    return [dict(row) for row in conn.execute(select(table)).mappings()]
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--apply", action="store_true", help="Escribe los datos en Render. Sin esta opción solo simula.")
-    args = parser.parse_args()
+def event_key(row, organizer_id, category_id):
+    return (
+        norm(row["title"]), row["date"], row["time"], norm(row["location"]),
+        organizer_id, category_id,
+    )
 
-    source_url = normalize_url(os.getenv("DATABASE_URL"))
-    target_url = normalize_url(os.getenv("RENDER_DATABASE_URL"))
-    source_engine = create_engine(source_url, pool_pre_ping=True)
-    target_engine = create_engine(target_url, pool_pre_ping=True)
 
-    src_meta, dst_meta = MetaData(), MetaData()
-    src_meta.reflect(bind=source_engine, only=["user", "category", "event", "booking"])
-    dst_meta.reflect(bind=target_engine, only=["user", "category", "event", "booking"])
+def booking_key(row, user_id, event_id):
+    return (user_id, event_id, row["booking_date"], row["quantity"], row["status"])
 
-    su, sc, se, sb = (src_meta.tables[f"public.{name}"] if f"public.{name}" in src_meta.tables else src_meta.tables[name]
-                       for name in ("user", "category", "event", "booking"))
-    du, dc, de, db = (dst_meta.tables[f"public.{name}"] if f"public.{name}" in dst_meta.tables else dst_meta.tables[name]
-                       for name in ("user", "category", "event", "booking"))
 
-    with source_engine.connect() as sconn, target_engine.connect() as dconn:
-        source_users, source_categories = rows(sconn, su), rows(sconn, sc)
-        source_events, source_bookings = rows(sconn, se), rows(sconn, sb)
-        target_users, target_categories = rows(dconn, du), rows(dconn, dc)
-        target_events, target_bookings = rows(dconn, de), rows(dconn, db)
+def insert_without_id(conn, table, row):
+    payload = {key: value for key, value in row.items() if key != "id"}
+    return conn.execute(table.insert().values(**payload).returning(table.c.id)).scalar_one()
 
-        user_map = {}
-        user_by_email = {norm(u["email"]): u for u in target_users}
-        for user in source_users:
-            existing = user_by_email.get(norm(user["email"]))
-            user_map[user["id"]] = existing["id"] if existing else user["id"]
 
-        category_map = {}
-        category_by_name = {norm(c["name"]): c for c in target_categories}
-        for category in source_categories:
-            existing = category_by_name.get(norm(category["name"]))
-            category_map[category["id"]] = existing["id"] if existing else category["id"]
+def migrate(apply):
+    source_engine = create_engine(db_url("DATABASE_URL"), pool_pre_ping=True)
+    target_engine = create_engine(db_url("RENDER_DATABASE_URL"), pool_pre_ping=True)
+    try:
+        sm, tm = MetaData(), MetaData()
+        sm.reflect(bind=source_engine, only=list(TABLES))
+        tm.reflect(bind=target_engine, only=list(TABLES))
+        source = {name: sm.tables.get(f"public.{name}", sm.tables.get(name)) for name in TABLES}
+        target = {name: tm.tables.get(f"public.{name}", tm.tables.get(name)) for name in TABLES}
+        if any(table is None for table in (*source.values(), *target.values())):
+            raise RuntimeError("No se encontraron todas las tablas requeridas en ambas bases.")
 
-        event_map = {}
-        target_event_keys = set()
-        for event in target_events:
-            target_event_keys.add((
-                norm(event["title"]), event["date"], event["time"],
-                norm(event["location"]), event["organizer_id"], event["category_id"]
-            ))
-        new_events = []
-        for event in source_events:
-            organizer_id = user_map.get(event["organizer_id"])
-            category_id = category_map.get(event["category_id"])
-            if organizer_id is None or category_id is None:
-                raise RuntimeError(f"Evento {event['id']} tiene organizador/categoría sin correspondencia.")
-            key = (norm(event["title"]), event["date"], event["time"],
-                   norm(event["location"]), organizer_id, category_id)
-            existing = next((e for e in target_events if (
-                norm(e["title"]), e["date"], e["time"], norm(e["location"]),
-                e["organizer_id"], e["category_id"]) == key), None)
-            if existing:
-                event_map[event["id"]] = existing["id"]
-            else:
-                event_map[event["id"]] = event["id"]
-                new_events.append({**event, "organizer_id": organizer_id, "category_id": category_id})
-                target_events.append({**event, "organizer_id": organizer_id, "category_id": category_id})
+        with source_engine.connect() as sc:
+            src = {name: load(sc, source[name]) for name in TABLES}
 
-        target_booking_keys = {
-            (b["user_id"], b["event_id"], b["booking_date"], b["quantity"], b["status"])
-            for b in target_bookings
-        }
-        new_bookings = []
-        for booking in source_bookings:
-            user_id = user_map.get(booking["user_id"])
-            event_id = event_map.get(booking["event_id"])
-            if user_id is None or event_id is None:
-                raise RuntimeError(f"Reserva {booking['id']} tiene usuario/evento sin correspondencia.")
-            key = (user_id, event_id, booking["booking_date"], booking["quantity"], booking["status"])
-            if key not in target_booking_keys:
-                new_bookings.append({**booking, "user_id": user_id, "event_id": event_id})
-                target_booking_keys.add(key)
-
-        new_users = [u for u in source_users if norm(u["email"]) not in user_by_email]
-        new_categories = [c for c in source_categories if norm(c["name"]) not in category_by_name]
-
-        print("Resumen de migración (origen -> Render):")
-        print(f"  Usuarios:    {len(source_users)} origen; {len(new_users)} nuevos; {len(source_users)-len(new_users)} coincidentes")
-        print(f"  Categorías:  {len(source_categories)} origen; {len(new_categories)} nuevas; {len(source_categories)-len(new_categories)} coincidentes")
-        print(f"  Eventos:     {len(source_events)} origen; {len(new_events)} nuevos; {len(source_events)-len(new_events)} coincidentes")
-        print(f"  Reservas:    {len(source_bookings)} origen; {len(new_bookings)} nuevas")
-        if not args.apply:
-            print("\nSIMULACIÓN: no se ha escrito ningún dato. Revisa el resumen y ejecuta con --apply para aplicar.")
-            return
-
+        # All writes are one transaction. Dry-run uses the same matching rules,
+        # but does not reserve IDs or change either database.
         with target_engine.begin() as tx:
-            # Re-read target within write transaction to avoid blindly overwriting rows.
-            tx.execute(du.insert(), new_users) if new_users else None
-            tx.execute(dc.insert(), new_categories) if new_categories else None
-            tx.execute(de.insert(), new_events) if new_events else None
-            tx.execute(db.insert(), new_bookings) if new_bookings else None
-            for table in (du, dc, de, db):
-                if "id" in table.c:
-                    tx.execute(text(
-                        f"SELECT setval(pg_get_serial_sequence('public.{table.name}', 'id'), "
-                        f"GREATEST(COALESCE((SELECT MAX(id) FROM public.{table.name}), 1), 1), "
-                        f"EXISTS (SELECT 1 FROM public.{table.name}))"
-                    ))
-        print("\nMigración aplicada correctamente.")
-    source_engine.dispose()
-    target_engine.dispose()
+            dst = {name: load(tx, target[name]) for name in TABLES}
+            user_by_email = {norm(row["email"]): row for row in dst["user"]}
+            category_by_name = {norm(row["name"]): row for row in dst["category"]}
+
+            user_map = {}
+            new_users = []
+            for row in src["user"]:
+                match = user_by_email.get(norm(row["email"]))
+                if match:
+                    user_map[row["id"]] = match["id"]
+                else:
+                    new_users.append(row)
+
+            category_map = {}
+            new_categories = []
+            for row in src["category"]:
+                match = category_by_name.get(norm(row["name"]))
+                if match:
+                    category_map[row["id"]] = match["id"]
+                else:
+                    new_categories.append(row)
+
+            # For preview, provisional IDs are used only to calculate counts.
+            next_user = max([r["id"] for r in dst["user"]] or [0]) + 1
+            for row in new_users:
+                user_map[row["id"]] = next_user
+                next_user += 1
+            next_category = max([r["id"] for r in dst["category"]] or [0]) + 1
+            for row in new_categories:
+                category_map[row["id"]] = next_category
+                next_category += 1
+
+            event_index = {
+                event_key(row, row["organizer_id"], row["category_id"]): row
+                for row in dst["event"]
+            }
+            event_map = {}
+            new_events = []
+            next_event = max([r["id"] for r in dst["event"]] or [0]) + 1
+            for row in src["event"]:
+                org = user_map.get(row["organizer_id"])
+                cat = category_map.get(row["category_id"])
+                if org is None or cat is None:
+                    raise RuntimeError(f"Evento local {row['id']}: no se pudo mapear organizador/categoría.")
+                key = event_key(row, org, cat)
+                match = event_index.get(key)
+                if match:
+                    event_map[row["id"]] = match["id"]
+                else:
+                    event_map[row["id"]] = next_event
+                    next_event += 1
+                    new_events.append((row, org, cat))
+                    event_index[key] = {"id": event_map[row["id"]]}
+
+            booking_index = {
+                booking_key(row, row["user_id"], row["event_id"])
+                for row in dst["booking"]
+            }
+            new_bookings = []
+            for row in src["booking"]:
+                user_id = user_map.get(row["user_id"])
+                event_id = event_map.get(row["event_id"])
+                if user_id is None or event_id is None:
+                    raise RuntimeError(f"Reserva local {row['id']}: no se pudo mapear usuario/evento.")
+                key = booking_key(row, user_id, event_id)
+                if key not in booking_index:
+                    new_bookings.append((row, user_id, event_id))
+                    booking_index.add(key)
+
+            print("SIMULACIÓN DE MIGRACIÓN" if not apply else "APLICANDO MIGRACIÓN")
+            print(f"Usuarios:   {len(src['user'])} origen; {len(new_users)} nuevos; {len(src['user'])-len(new_users)} ya existentes")
+            print(f"Categorías: {len(src['category'])} origen; {len(new_categories)} nuevas; {len(src['category'])-len(new_categories)} ya existentes")
+            print(f"Eventos:    {len(src['event'])} origen; {len(new_events)} nuevos; {len(src['event'])-len(new_events)} ya existentes")
+            print(f"Reservas:   {len(src['booking'])} origen; {len(new_bookings)} nuevas")
+            if not apply:
+                print("No se ha modificado ninguna fila. Añade --apply para ejecutar la migración.")
+                tx.rollback()
+                return
+
+            # Insert parent rows first and use database-generated IDs, never source IDs.
+            for row in new_users:
+                user_map[row["id"]] = insert_without_id(tx, target["user"], row)
+            for row in new_categories:
+                category_map[row["id"]] = insert_without_id(tx, target["category"], row)
+
+            # Rebuild event matches with real mapped IDs, then insert missing events.
+            actual_event_index = {
+                event_key(row, row["organizer_id"], row["category_id"]): row["id"]
+                for row in load(tx, target["event"])
+            }
+            for row, _, _ in new_events:
+                org, cat = user_map[row["organizer_id"]], category_map[row["category_id"]]
+                key = event_key(row, org, cat)
+                if key in actual_event_index:
+                    event_map[row["id"]] = actual_event_index[key]
+                else:
+                    payload = dict(row)
+                    payload["organizer_id"], payload["category_id"] = org, cat
+                    event_map[row["id"]] = insert_without_id(tx, target["event"], payload)
+                    actual_event_index[key] = event_map[row["id"]]
+
+            actual_booking_index = {
+                booking_key(row, row["user_id"], row["event_id"])
+                for row in load(tx, target["booking"])
+            }
+            for row, _, _ in new_bookings:
+                user_id, event_id = user_map[row["user_id"]], event_map[row["event_id"]]
+                key = booking_key(row, user_id, event_id)
+                if key not in actual_booking_index:
+                    payload = dict(row)
+                    payload["user_id"], payload["event_id"] = user_id, event_id
+                    insert_without_id(tx, target["booking"], payload)
+                    actual_booking_index.add(key)
+
+            for name in TABLES:
+                tx.execute(text(
+                    f"SELECT setval(pg_get_serial_sequence('public.{name}', 'id'), "
+                    f"GREATEST(COALESCE((SELECT MAX(id) FROM public.{name}), 1), 1), "
+                    f"EXISTS (SELECT 1 FROM public.{name}))"
+                ))
+        print("Migración completada y confirmada.")
+    finally:
+        source_engine.dispose()
+        target_engine.dispose()
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--apply", action="store_true", help="Escribe los registros en Render.")
+    args = parser.parse_args()
     try:
-        main()
+        migrate(args.apply)
     except Exception as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)
