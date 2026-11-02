@@ -6,10 +6,20 @@ Pluxis es una aplicación web Full Stack para descubrir eventos, consultar activ
 
 Proyecto académico desarrollado con React, Flask y PostgreSQL.
 
-## Demo online
+## Dirección de la página web y acceso a la demo
 
-- **Aplicación:** https://pluxis.onrender.com
-- **API:** https://pluxis-api.onrender.com
+La aplicación Pluxis está publicada y se puede consultar desde cualquier navegador mediante la siguiente dirección:
+
+<https://pluxis.onrender.com>
+
+- **Nombre del sitio:** Pluxis
+- **URL pública del frontend:** [https://pluxis.onrender.com](https://pluxis.onrender.com)
+- **URL base del backend (API REST):** [https://pluxis-api.onrender.com](https://pluxis-api.onrender.com)
+- **Prefijo de los endpoints de la API:** `https://pluxis-api.onrender.com/api`
+
+Para evaluar la aplicación, abre primero la dirección del frontend. Desde esa página se puede navegar por el catálogo de eventos, consultar sus detalles, iniciar sesión y probar las funciones correspondientes al perfil de cliente o de organizador.
+
+La dirección del frontend es la que debe compartirse con los usuarios y con el profesor. La dirección de la API se incluye como referencia técnica para identificar el servicio backend que utiliza la aplicación.
 
 ### Cuentas de demostración
 
