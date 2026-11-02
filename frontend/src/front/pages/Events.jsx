@@ -9,6 +9,7 @@ export const Events = () => {
     const [error, setError] = useState("");
 
     const [location, setLocation] = useState("");
+    const [currentCoordinates, setCurrentCoordinates] = useState(null);
     const [radius, setRadius] = useState("25");
     const [nearbyMode, setNearbyMode] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
@@ -90,7 +91,7 @@ export const Events = () => {
         const searchLocation = location.trim();
 
         if (!searchLocation) {
-            setError("Introduce una ciudad o ubicación.");
+            setError("Introduce una ciudad o ubicación o utiliza tu ubicación actual.");
             return;
         }
 
@@ -98,10 +99,16 @@ export const Events = () => {
             setLoading(true);
             setError("");
 
-            const params = new URLSearchParams({
-                location: searchLocation,
-                radius_km: radius
-            });
+            const params = new URLSearchParams({ radius_km: radius });
+
+            // Si el usuario ha obtenido su GPS, reutilizamos sus coordenadas.
+            // Nunca enviamos el texto "Tu ubicación actual" a Geoapify.
+            if (currentCoordinates) {
+                params.set("lat", String(currentCoordinates.lat));
+                params.set("lon", String(currentCoordinates.lon));
+            } else {
+                params.set("location", searchLocation);
+            }
 
             const response = await fetch(
                 `${backendUrl}/api/events/nearby?${params.toString()}`
@@ -167,9 +174,15 @@ export const Events = () => {
                         );
                     }
 
+                    const coordinates = {
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    };
+
                     setEvents(
                         Array.isArray(data) ? data : data.events || []
                     );
+                    setCurrentCoordinates(coordinates);
                     setLocation("Tu ubicación actual");
                     setNearbyMode(true);
                 } catch (error) {
@@ -228,6 +241,7 @@ export const Events = () => {
 
             setNearbyMode(false);
             setLocation("");
+            setCurrentCoordinates(null);
         } catch (error) {
             console.error(error);
             setError(
@@ -361,9 +375,10 @@ export const Events = () => {
                                 className="form-control"
                                 placeholder="Ej.: Toledo, Madrid..."
                                 value={location}
-                                onChange={(e) =>
-                                    setLocation(e.target.value)
-                                }
+                                onChange={(e) => {
+                                    setLocation(e.target.value);
+                                    setCurrentCoordinates(null);
+                                }}
                                 required
                             />
                         </div>
