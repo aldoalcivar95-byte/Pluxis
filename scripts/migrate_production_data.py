@@ -12,9 +12,7 @@ import sys
 
 from sqlalchemy import MetaData, Table, create_engine, select, text
 
-
 TABLES = ("user", "category", "event", "booking")
-
 
 def db_url(name):
     value = os.getenv(name)
@@ -22,14 +20,11 @@ def db_url(name):
         raise RuntimeError(f"Falta la variable {name}.")
     return value.replace("postgres://", "postgresql://", 1)
 
-
 def norm(value):
     return str(value or "").strip().casefold()
 
-
 def load(conn, table):
     return [dict(row) for row in conn.execute(select(table)).mappings()]
-
 
 def event_key(row, organizer_id, category_id):
     return (
@@ -37,15 +32,12 @@ def event_key(row, organizer_id, category_id):
         organizer_id, category_id,
     )
 
-
 def booking_key(row, user_id, event_id):
     return (user_id, event_id, row["booking_date"], row["quantity"], row["status"])
-
 
 def insert_without_id(conn, table, row):
     payload = {key: value for key, value in row.items() if key != "id"}
     return conn.execute(table.insert().values(**payload).returning(table.c.id)).scalar_one()
-
 
 def migrate(apply):
     source_engine = create_engine(db_url("DATABASE_URL"), pool_pre_ping=True)
@@ -62,8 +54,6 @@ def migrate(apply):
         with source_engine.connect() as sc:
             src = {name: load(sc, source[name]) for name in TABLES}
 
-        # All writes are one transaction. Dry-run uses the same matching rules,
-        # but does not reserve IDs or change either database.
         with target_engine.begin() as tx:
             dst = {name: load(tx, target[name]) for name in TABLES}
             user_by_email = {norm(row["email"]): row for row in dst["user"]}
@@ -87,7 +77,6 @@ def migrate(apply):
                 else:
                     new_categories.append(row)
 
-            # For preview, provisional IDs are used only to calculate counts.
             next_user = max([r["id"] for r in dst["user"]] or [0]) + 1
             for row in new_users:
                 user_map[row["id"]] = next_user
@@ -144,13 +133,11 @@ def migrate(apply):
                 tx.rollback()
                 return
 
-            # Insert parent rows first and use database-generated IDs, never source IDs.
             for row in new_users:
                 user_map[row["id"]] = insert_without_id(tx, target["user"], row)
             for row in new_categories:
                 category_map[row["id"]] = insert_without_id(tx, target["category"], row)
 
-            # Rebuild event matches with real mapped IDs, then insert missing events.
             actual_event_index = {
                 event_key(row, row["organizer_id"], row["category_id"]): row["id"]
                 for row in load(tx, target["event"])
@@ -189,7 +176,6 @@ def migrate(apply):
     finally:
         source_engine.dispose()
         target_engine.dispose()
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

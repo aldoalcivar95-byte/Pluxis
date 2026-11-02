@@ -17,7 +17,6 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 
-
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 
 static_file_dir = os.path.join(
@@ -27,10 +26,6 @@ static_file_dir = os.path.join(
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
-
-# ---------------------------------------------------------
-# CORS
-# ---------------------------------------------------------
 
 frontend_url = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
 allowed_origins = [
@@ -65,10 +60,6 @@ CORS(
     },
 )
 
-# ---------------------------------------------------------
-# DATABASE
-# ---------------------------------------------------------
-
 db_url = os.getenv("DATABASE_URL")
 
 if db_url:
@@ -81,10 +72,6 @@ else:
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# ---------------------------------------------------------
-# JWT
-# ---------------------------------------------------------
-
 app.config["JWT_SECRET_KEY"] = os.getenv(
     "JWT_SECRET_KEY",
     "dev-pluxis-secret",
@@ -92,37 +79,17 @@ app.config["JWT_SECRET_KEY"] = os.getenv(
 
 jwt = JWTManager(app)
 
-# ---------------------------------------------------------
-# DATABASE / MIGRATIONS
-# ---------------------------------------------------------
-
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
-
-# ---------------------------------------------------------
-# ADMIN / COMMANDS
-# ---------------------------------------------------------
 
 setup_admin(app)
 setup_commands(app)
 
-# ---------------------------------------------------------
-# API BLUEPRINT
-# ---------------------------------------------------------
-
 app.register_blueprint(api, url_prefix="/api")
-
-# ---------------------------------------------------------
-# ERROR HANDLER
-# ---------------------------------------------------------
 
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
-
-# ---------------------------------------------------------
-# FRONTEND
-# ---------------------------------------------------------
 
 @app.route("/")
 def sitemap():
@@ -130,7 +97,6 @@ def sitemap():
         return generate_sitemap(app)
 
     return send_from_directory(static_file_dir, "index.html")
-
 
 @app.route("/<path:path>", methods=["GET"])
 def serve_any_other_file(path):
@@ -142,10 +108,6 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0
     return response
-
-# ---------------------------------------------------------
-# RUN SERVER
-# ---------------------------------------------------------
 
 if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 3001))

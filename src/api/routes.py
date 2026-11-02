@@ -40,9 +40,7 @@ from api.models import (
     Booking
 )
 
-
 api = Blueprint("api", __name__)
-
 
 def send_password_reset_email(recipient, reset_link):
     smtp_host = os.getenv("MAIL_SERVER")
@@ -88,7 +86,6 @@ def send_password_reset_email(recipient, reset_link):
                 server.ehlo()
             server.login(smtp_username, smtp_password)
             server.send_message(message)
-
 
 def geocode_location(location):
     """
@@ -200,14 +197,12 @@ def geocode_location(location):
         "longitude": float(longitude)
     }
 
-
 @api.route("/hello", methods=["GET", "POST"])
 def handle_hello():
 
     return jsonify({
         "message": "Hello! I'm a message that came from the backend."
     }), 200
-
 
 @api.route("/register", methods=["POST"])
 def register():
@@ -276,7 +271,6 @@ def register():
         "user": new_user.serialize()
     }), 201
 
-
 @api.route("/login", methods=["POST"])
 def login():
 
@@ -334,7 +328,6 @@ def login():
         "user": user.serialize()
     }), 200
 
-
 @api.route("/forgot-password", methods=["POST"])
 def forgot_password():
     data = request.get_json(silent=True) or {}
@@ -377,7 +370,6 @@ def forgot_password():
         return jsonify({"message": "No se pudo enviar el correo de recuperación. Inténtalo más tarde."}), 500
 
     return jsonify({"message": generic_message}), 200
-
 
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
@@ -482,7 +474,6 @@ def reset_password():
         "message": "Password reset successfully"
     }), 200
 
-
 @api.route("/profile", methods=["GET"])
 @jwt_required()
 def profile():
@@ -503,7 +494,6 @@ def profile():
         "user": user.serialize()
     }), 200
 
-
 @api.route("/categories", methods=["GET"])
 def get_categories():
 
@@ -515,7 +505,6 @@ def get_categories():
         category.serialize()
         for category in categories
     ]), 200
-
 
 @api.route("/events", methods=["GET"])
 def get_events():
@@ -529,7 +518,6 @@ def get_events():
         event.serialize()
         for event in events
     ]), 200
-
 
 @api.route("/organizer/events", methods=["GET"])
 @jwt_required()
@@ -594,7 +582,6 @@ def get_organizer_events():
         result.append(event_data)
 
     return jsonify(result), 200
-
 
 @api.route(
     "/organizer/events/<int:event_id>/bookings",
@@ -673,7 +660,6 @@ def get_organizer_event_bookings(event_id):
 
     return jsonify(result), 200
 
-
 @api.route("/upload-image", methods=["POST"])
 @jwt_required()
 def upload_event_image():
@@ -729,7 +715,6 @@ def upload_event_image():
     except Exception as error:
         print(f"Cloudinary upload error: {error}")
         return jsonify({"message": "No se pudo subir la imagen"}), 500
-
 
 @api.route("/events", methods=["POST"])
 @jwt_required()
@@ -1006,7 +991,6 @@ def create_event():
         "event": new_event.serialize()
     }), 201
 
-
 @api.route("/events/nearby", methods=["GET"])
 def get_nearby_events():
     """Busca eventos dentro de un radio y devuelve su distancia en km.
@@ -1101,7 +1085,6 @@ def get_nearby_events():
         "events": nearby
     }), 200
 
-
 @api.route("/events/<int:event_id>", methods=["GET"])
 def get_event(event_id):
 
@@ -1134,7 +1117,6 @@ def get_event(event_id):
         "event": event.serialize(),
         "available_seats": available_seats
     }), 200
-
 
 @api.route("/events/<int:event_id>", methods=["PUT"])
 @jwt_required()
@@ -1446,7 +1428,6 @@ def update_event(event_id):
         "event": event.serialize()
     }), 200
 
-
 @api.route("/events/<int:event_id>", methods=["DELETE"])
 @jwt_required()
 def delete_event(event_id):
@@ -1523,7 +1504,6 @@ def delete_event(event_id):
     return jsonify({
         "message": "Event deleted successfully"
     }), 200
-
 
 @api.route("/bookings", methods=["POST"])
 @jwt_required()
@@ -1671,7 +1651,6 @@ def create_booking():
         )
     }), 201
 
-
 @api.route("/bookings", methods=["GET"])
 @jwt_required()
 def get_my_bookings():
@@ -1713,7 +1692,6 @@ def get_my_bookings():
         result.append(booking_data)
 
     return jsonify(result), 200
-
 
 @api.route(
     "/bookings/<int:booking_id>",
@@ -1761,7 +1739,6 @@ def get_booking(booking_id):
     return jsonify({
         "booking": booking_data
     }), 200
-
 
 @api.route(
     "/bookings/<int:booking_id>",

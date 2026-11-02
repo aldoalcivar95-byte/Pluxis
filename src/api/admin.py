@@ -10,13 +10,10 @@ from wtforms import PasswordField
 from . import models
 from .models import db
 
-
 class UserModelView(ModelView):
 
-    # Never show the password in the users list
     column_exclude_list = ["password"]
 
-    # Password field in the admin form
     form_extra_fields = {
         "password": PasswordField("Password")
     }
@@ -25,10 +22,8 @@ class UserModelView(ModelView):
         try:
             user = models.User()
 
-            # Copy form data to the model
             form.populate_obj(user)
 
-            # Hash password before saving
             user.password = bcrypt.hashpw(
                 form.password.data.encode("utf-8"),
                 bcrypt.gensalt()
@@ -36,7 +31,6 @@ class UserModelView(ModelView):
 
             self.session.add(user)
 
-            # Flask-Admin expects these 3 arguments
             self._on_model_change(form, user, True)
 
             self.session.commit()
@@ -49,23 +43,18 @@ class UserModelView(ModelView):
 
     def update_model(self, form, model):
         try:
-            # Save current hashed password
             current_password = model.password
 
-            # Copy form data to the model
             form.populate_obj(model)
 
-            # Only hash a new password if one was entered
             if form.password.data:
                 model.password = bcrypt.hashpw(
                     form.password.data.encode("utf-8"),
                     bcrypt.gensalt()
                 ).decode("utf-8")
             else:
-                # Keep the existing password
                 model.password = current_password
 
-            # Flask-Admin expects these 3 arguments
             self._on_model_change(form, model, False)
 
             self.session.commit()
@@ -75,7 +64,6 @@ class UserModelView(ModelView):
         except Exception:
             self.session.rollback()
             raise
-
 
 def setup_admin(app):
 
@@ -92,7 +80,6 @@ def setup_admin(app):
         )
     )
 
-    # Automatically register all SQLAlchemy models
     for name, obj in inspect.getmembers(models):
 
         if inspect.isclass(obj) and issubclass(obj, db.Model):

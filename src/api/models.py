@@ -14,13 +14,7 @@ from sqlalchemy import (
 
 from sqlalchemy.orm import Mapped, mapped_column
 
-
 db = SQLAlchemy()
-
-
-# =========================================================
-# USER
-# =========================================================
 
 class User(db.Model):
 
@@ -55,10 +49,6 @@ class User(db.Model):
         default=True
     )
 
-    # =====================================================
-    # PASSWORD RESET
-    # =====================================================
-
     reset_token: Mapped[str | None] = mapped_column(
         String(255),
         nullable=True,
@@ -78,11 +68,6 @@ class User(db.Model):
             "role": self.role
         }
 
-
-# =========================================================
-# CATEGORY
-# =========================================================
-
 class Category(db.Model):
 
     id: Mapped[int] = mapped_column(
@@ -100,11 +85,6 @@ class Category(db.Model):
             "id": self.id,
             "name": self.name
         }
-
-
-# =========================================================
-# EVENT
-# =========================================================
 
 class Event(db.Model):
 
@@ -136,10 +116,6 @@ class Event(db.Model):
         String(200),
         nullable=False
     )
-
-    # =====================================================
-    # GEOLOCATION
-    # =====================================================
 
     latitude: Mapped[float | None] = mapped_column(
         Float,
@@ -192,11 +168,6 @@ class Event(db.Model):
             "organizer_id": self.organizer_id,
             "category_id": self.category_id
         }
-
-
-# =========================================================
-# BOOKING
-# =========================================================
 
 class Booking(db.Model):
 

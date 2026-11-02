@@ -1,10 +1,8 @@
 import { useContext, useReducer, createContext } from "react";
 import storeReducer, { initialStore } from "../store";
 
-// Create global context
 const StoreContext = createContext();
 
-// Global state provider
 export function StoreProvider({ children }) {
     const [store, dispatch] = useReducer(
         storeReducer,
@@ -18,7 +16,6 @@ export function StoreProvider({ children }) {
     );
 }
 
-// Hook to access global state
 export default function useGlobalReducer() {
     const { dispatch, store } = useContext(StoreContext);
 

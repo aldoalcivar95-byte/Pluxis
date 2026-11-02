@@ -10,7 +10,6 @@ from app import app
 from api.models import db, Event
 from api.routes import geocode_location
 
-
 def main():
     with app.app_context():
         events = Event.query.filter(
@@ -60,7 +59,6 @@ def main():
             print("Revisa manualmente las ubicaciones siguientes:")
             for event_id, location in failed:
                 print(f"- ID {event_id}: {location}")
-
 
 if __name__ == "__main__":
     main()
